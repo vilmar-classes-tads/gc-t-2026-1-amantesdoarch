@@ -3,14 +3,12 @@ package br.edu.ifpe.sistema_editais.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpe.sistema_editais.dto.UserRegistrationDto;
-import br.edu.ifpe.sistema_editais.entity.User;
 import br.edu.ifpe.sistema_editais.service.UserService;
 
 @RestController
@@ -27,7 +25,7 @@ public class UserController {
     public ResponseEntity<String> cadastrar(@RequestBody UserRegistrationDto dto) {
         try {
             userService.cadastrar(dto);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Usuário cadastrado com sucesso!");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

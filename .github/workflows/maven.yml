@@ -6,6 +6,7 @@ on:
       - main
       - develop
       - 'feature/**' # Captura qualquer push em branches como feature/issue0, feature/login, etc.
+      - config-ci # Branch específica para alterações na configuração do CI (temporária)
   pull_request:
     branches:
       - main

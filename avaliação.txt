@@ -1,0 +1,9 @@
+Avaliação 1:
+
+1- não encontrei a branch de implementação da issue 0 e a integração com o pull request.
+2 - Vocês não criaram o projeto para acompanhamento das issues?
+3 - A main está desatualizada
+4 - Faltou um "Branch protection rules" na develop, tem só na main
+5 - A última TAG está antiga, precisamos criar outra ao final da implementação da issue 2.
+
+cada problema desse precisa ser corrigido via Issue.

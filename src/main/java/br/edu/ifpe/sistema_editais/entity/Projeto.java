@@ -18,7 +18,6 @@ public class Projeto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String titulo;
     private List<String> palavrasChave;
     private String publicoAlvo;

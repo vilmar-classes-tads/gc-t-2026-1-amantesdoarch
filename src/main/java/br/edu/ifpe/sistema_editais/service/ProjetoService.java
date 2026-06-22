@@ -20,7 +20,7 @@ public class ProjetoService {
             throw new IllegalStateException("O projeto só pode ser editado se estiver em estado 'rascunho' ou 'em correção'");
         }
 
-        // TODO: Implementar a lógica de edição do projeto
+        projetoRepository.save(projeto);
     }
 
 }

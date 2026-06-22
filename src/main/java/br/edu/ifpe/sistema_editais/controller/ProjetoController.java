@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpe.sistema_editais.dto.ProjetoDto;
-import br.edu.ifpe.sistema_editais.entity.Projeto;
 import br.edu.ifpe.sistema_editais.service.ProjetoService;
 
 @RestController

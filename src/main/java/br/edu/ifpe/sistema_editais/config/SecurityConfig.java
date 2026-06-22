@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity // Nota: Opcional se você estiver utilizando o Spring Boot
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
@@ -20,6 +20,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/projeto").hasRole("COORDENADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/projeto").hasRole("COORDENADOR")
                 .anyRequest().authenticated()
             )
             .build();

@@ -63,7 +63,7 @@ public class User {
     @Column(nullable = true)
     private String telefone;
 
-    @ElementCollection(fetch = FetchType.EAGER) // Eager para carregar os perfis junto com o user
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_perfis", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "perfil")
     @Enumerated(EnumType.STRING)

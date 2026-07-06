@@ -7,3 +7,12 @@ Avaliação 1:
 5 - A última TAG está antiga, precisamos criar outra ao final da implementação da issue 2.
 
 cada problema desse precisa ser corrigido via Issue.
+
+Comentário:
+
+1 - As branchs de implementação foram excluidas e o pull request da issue 0 foi sim feito,
+só que no nome do PR eu tinha colocado issue 1. Isso foi corrigido.
+2 - Sim, as issues estão sendo acompanhadas
+3 - Branch main foi atualizada com a implementação das ultimas issues
+4 - Adicionada Branch Protection Rules na branch develop
+5 - Criação da nova tag para as ultimas entregas feita

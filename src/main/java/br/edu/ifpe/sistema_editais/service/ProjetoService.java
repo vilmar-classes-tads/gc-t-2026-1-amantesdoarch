@@ -1,5 +1,6 @@
 package br.edu.ifpe.sistema_editais.service;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifpe.sistema_editais.dto.ProjetoDto;
@@ -16,6 +17,15 @@ public class ProjetoService {
     }
 
     public void criarProjeto(ProjetoDto dto) {
+        if (dto.termoDeCompromissoAceito() == false)
+            throw new RuntimeException("O termo de compromisso precisa ser aceito.");
+
+        if (dto.titulo().isBlank())
+            throw new RuntimeException("O titulo não pode estar vázio.");
+
+        if (dto.ods().isBlank())
+            throw new RuntimeException("É preciso selecionar uma ODS.");
+
         Projeto p = new Projeto();
         p.setTitulo(dto.titulo());
         p.setResumo(dto.resumo());

@@ -5,6 +5,7 @@ import java.util.List;
 public record ProjetoDto(
     Long id,
     String titulo,
+    String resumo,
     List<String> palavrasChave,
     String publicoAlvo,
     String areaTematica,

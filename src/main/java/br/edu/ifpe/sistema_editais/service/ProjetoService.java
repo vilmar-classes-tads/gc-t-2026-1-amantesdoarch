@@ -1,6 +1,5 @@
 package br.edu.ifpe.sistema_editais.service;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifpe.sistema_editais.dto.ProjetoDto;
@@ -20,10 +19,10 @@ public class ProjetoService {
         if (dto.termoDeCompromissoAceito() == false)
             throw new RuntimeException("O termo de compromisso precisa ser aceito.");
 
-        if (dto.titulo().isBlank())
+        if (dto.titulo() == null || dto.titulo().isBlank())
             throw new RuntimeException("O titulo não pode estar vázio.");
 
-        if (dto.ods().isBlank())
+        if (dto.ods() == null || dto.ods().isBlank())
             throw new RuntimeException("É preciso selecionar uma ODS.");
 
         Projeto p = new Projeto();
@@ -42,8 +41,8 @@ public class ProjetoService {
     public void editarProjeto(ProjetoDto dto) {
         Projeto projeto = projetoRepository.getReferenceById(dto.id());
 
-        if (!projeto.getEstado().equals("rascunho") && !projeto.getEstado().equals("em correção")) {
-            throw new IllegalStateException("O projeto só pode ser editado se estiver em estado 'rascunho' ou 'em correção'");
+        if (!projeto.getEstado().equals("rascunho") && !projeto.getEstado().equals("correção")) {
+            throw new IllegalStateException("O projeto só pode ser editado se estiver em estado 'correção'");
         }
 
         projeto.setOds(dto.ods());

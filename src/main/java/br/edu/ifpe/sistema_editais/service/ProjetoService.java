@@ -25,7 +25,7 @@ public class ProjetoService {
         p.setOds(dto.ods());
         p.setPublicoAlvo(dto.publicoAlvo());
         p.setTermoDeCompromissoAceito(dto.termoDeCompromissoAceito());
-        p.setEstado("Rascunho");
+        p.setEstado("Submetido");
         projetoRepository.save(p);
     }
 

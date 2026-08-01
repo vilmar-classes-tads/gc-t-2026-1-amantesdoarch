@@ -18,6 +18,7 @@ public class ProjetoService {
     public void criarProjeto(ProjetoDto dto) {
         Projeto p = new Projeto();
         p.setTitulo(dto.titulo());
+        p.setResumo(dto.resumo());
         p.setPalavrasChave(dto.palavrasChave());
         p.setCampus(dto.campus());
         p.setAreaTematica(dto.areaTematica());
@@ -40,6 +41,7 @@ public class ProjetoService {
         projeto.setPalavrasChave(dto.palavrasChave());
         projeto.setTermoDeCompromissoAceito(dto.termoDeCompromissoAceito());
         projeto.setTitulo(dto.titulo());
+        projeto.setResumo(dto.resumo());
         projeto.setAreaTematica(dto.areaTematica());
         projeto.setCampus(dto.campus());
         projetoRepository.save(projeto);

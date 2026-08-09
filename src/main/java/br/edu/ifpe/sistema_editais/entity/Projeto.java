@@ -1,7 +1,9 @@
 package br.edu.ifpe.sistema_editais.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "projetos")
 public class Projeto {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +31,11 @@ public class Projeto {
     private String campus;
     private String ods;
     private Boolean termoDeCompromissoAceito;
-    private String estado; // valores possíveis: "Aprovado", "Rascunho", "Em correção", "Rejeitado"
+    private String estado;
 
+    @ElementCollection
+    private List<Membro> membros = new ArrayList<>();
+
+    @ElementCollection
+    private List<PlanoDeTrabalho> planosDeTrabalho = new ArrayList<>();
 }

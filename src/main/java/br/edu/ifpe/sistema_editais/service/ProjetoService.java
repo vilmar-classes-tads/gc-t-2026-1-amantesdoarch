@@ -3,12 +3,14 @@ package br.edu.ifpe.sistema_editais.service;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifpe.sistema_editais.dto.ProjetoDto;
+import br.edu.ifpe.sistema_editais.entity.Membro;
+import br.edu.ifpe.sistema_editais.entity.PlanoDeTrabalho;
 import br.edu.ifpe.sistema_editais.entity.Projeto;
 import br.edu.ifpe.sistema_editais.repository.ProjetoRepository;
 
 @Service
 public class ProjetoService {
-    
+
     private final ProjetoRepository projetoRepository;
 
     public ProjetoService(ProjetoRepository projetoRepository) {
@@ -31,8 +33,8 @@ public class ProjetoService {
     public void editarProjeto(ProjetoDto dto) {
         Projeto projeto = projetoRepository.getReferenceById(dto.id());
 
-        if (!projeto.getEstado().equals("rascunho") && !projeto.getEstado().equals("em correção")) {
-            throw new IllegalStateException("O projeto só pode ser editado se estiver em estado 'rascunho' ou 'em correção'");
+        if (!projeto.getEstado().equals("Rascunho") && !projeto.getEstado().equals("Em correção")) {
+            throw new IllegalStateException("O projeto só pode ser editado se estiver em estado 'Rascunho' ou 'Em correção'");
         }
 
         projeto.setOds(dto.ods());
@@ -45,4 +47,39 @@ public class ProjetoService {
         projetoRepository.save(projeto);
     }
 
+    public void adicionarMembro(Long projetoId, Membro membro) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado"));
+
+        projeto.getMembros().add(membro);
+        projetoRepository.save(projeto);
+    }
+
+    public void removerMembro(Long projetoId, int index) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado"));
+
+        projeto.getMembros().remove(index);
+        projetoRepository.save(projeto);
+    }
+
+    public void adicionarPlano(Long projetoId, PlanoDeTrabalho plano) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado"));
+
+        if (projeto.getPlanosDeTrabalho().size() >= 4) {
+            throw new IllegalArgumentException("O projeto já atingiu o limite máximo de 4 planos de trabalho");
+        }
+
+        projeto.getPlanosDeTrabalho().add(plano);
+        projetoRepository.save(projeto);
+    }
+
+    public void removerPlano(Long projetoId, int index) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado"));
+
+        projeto.getPlanosDeTrabalho().remove(index);
+        projetoRepository.save(projeto);
+    }
 }

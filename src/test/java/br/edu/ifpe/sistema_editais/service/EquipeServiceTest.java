@@ -1,4 +1,4 @@
-package br.edu.ifpe.sistema_editais.services;
+package br.edu.ifpe.sistema_editais.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

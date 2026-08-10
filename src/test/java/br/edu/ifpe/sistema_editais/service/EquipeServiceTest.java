@@ -1,4 +1,4 @@
-package br.edu.ifpe.sistema_editais.service;
+package br.edu.ifpe.sistema_editais.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +25,7 @@ import br.edu.ifpe.sistema_editais.dto.PlanoTrabalhoDto;
 import br.edu.ifpe.sistema_editais.entity.Membro;
 import br.edu.ifpe.sistema_editais.entity.PlanoTrabalho;
 import br.edu.ifpe.sistema_editais.repository.EquipeRepository;
+import br.edu.ifpe.sistema_editais.service.EquipeService;
 
 @ExtendWith(MockitoExtension.class)
 class EquipeServiceTest {
@@ -109,6 +110,7 @@ class EquipeServiceTest {
         Membro membroAssociado = new Membro();
         membroAssociado.setId(idMembro);
         membroAssociado.setNome("Ana Clara Souza");
+        membroAssociado.setProjetoId(1L); 
 
         // Simula que há espaço (retorna menos de 4 planos)
         when(equipeRepository.contarPlanosDaEquipe(anyLong())).thenReturn(3L);
@@ -170,14 +172,13 @@ class EquipeServiceTest {
         
         Membro membroAssociado = new Membro();
         membroAssociado.setId(idMembro);
+        membroAssociado.setProjetoId(1L);
 
         when(equipeRepository.contarPlanosDaEquipe(anyLong())).thenReturn(1L);
         when(equipeRepository.buscarMembroPorId(idMembro)).thenReturn(membroAssociado);
 
-        // Act
         equipeService.adicionarPlanoTrabalho(idMembro, dto);
 
-        // Assert
         ArgumentCaptor<PlanoTrabalho> captor = ArgumentCaptor.forClass(PlanoTrabalho.class);
         verify(equipeRepository).savePlano(captor.capture());
 

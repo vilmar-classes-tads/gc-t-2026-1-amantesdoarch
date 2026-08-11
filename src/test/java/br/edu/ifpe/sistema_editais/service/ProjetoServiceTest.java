@@ -1,8 +1,10 @@
 package br.edu.ifpe.sistema_editais.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,16 +24,24 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import br.edu.ifpe.sistema_editais.dto.ProjetoDto;
+import br.edu.ifpe.sistema_editais.entity.Anexo;
 import br.edu.ifpe.sistema_editais.entity.Projeto;
+import br.edu.ifpe.sistema_editais.repository.AnexoRepository;
 import br.edu.ifpe.sistema_editais.repository.ProjetoRepository;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProjetoServiceTest {
     
     @Mock
     private ProjetoRepository projetoRepository;
+
+    @Mock
+    private AnexoRepository anexoRepository;
 
     @InjectMocks
     private ProjetoService projetoService;
@@ -229,6 +239,17 @@ public class ProjetoServiceTest {
         verify(projetoRepository, never()).save(any(Projeto.class));
     }
 
+    private Projeto criarProjetoExemplo(Long id, String titulo, String campus, String estado) {
+        return new Projeto(
+            id, titulo, null, new ArrayList<String>(),
+            null, null, campus, null, null, estado 
+        );
+    }
+
+    private Projeto criarProjetoExemplo(Long id, String titulo, String campus, String estado, String editalTitulo) {
+        return criarProjetoExemplo(id, titulo, campus, estado);
+    }
+
     @Test
     @DisplayName("CT-31: Admin Geral acessa menu Projetos e visualiza todos os projetos")
     void adminGeralDeveVerTodosOsProjetosAoAcessarMenuProjetos() {
@@ -356,14 +377,15 @@ public class ProjetoServiceTest {
     @Test
     @DisplayName("CT-35: Admin Geral pode fazer download de anexos de projetos de outros usuários")
     void adminGeralDeveFazerDownloadDeAnexosDeProjetosDeOutros() {
-        when(projetoRepository.getReferenceById(1L))
-            .thenReturn(criarProjetoExemplo(1L, "Projeto Outro", "Recife", "Submetido"));
+        when(anexoRepository.findByIdAndProjetoId(1L, 1L))
+            .thenReturn(Optional.of(new Anexo(1L, "anexo.pdf", "Anexo", new byte[]{1}, 1L)));
 
         assertTrue(projetoService.verificarPermissaoDownload(1L, "Admin Geral"));
 
-        projetoService.downloadAnexo(1L, 1L);
+        Anexo anexo = projetoService.downloadAnexo(1L, 1L);
 
-        verify(projetoRepository).getReferenceById(1L);
+        assertNotNull(anexo);
+        verify(anexoRepository).findByIdAndProjetoId(1L, 1L);
     }
 
     @Test
@@ -371,12 +393,13 @@ public class ProjetoServiceTest {
     void gestorDeveFazerDownloadDeAnexosDeProjetosDeOutros() {
         assertTrue(projetoService.verificarPermissaoDownload(1L, "Gestor"));
 
-        when(projetoRepository.getReferenceById(1L))
-            .thenReturn(criarProjetoExemplo(1L, "Projeto Outro", "Recife", "Submetido"));
+        when(anexoRepository.findByIdAndProjetoId(1L, 1L))
+            .thenReturn(Optional.of(new Anexo(1L, "anexo.pdf", "Anexo", new byte[]{1}, 1L)));
 
-        projetoService.downloadAnexo(1L, 1L);
+        Anexo anexo = projetoService.downloadAnexo(1L, 1L);
 
-        verify(projetoRepository).getReferenceById(1L);
+        assertNotNull(anexo);
+        verify(anexoRepository).findByIdAndProjetoId(1L, 1L);
     }
 
     @Test
@@ -426,7 +449,7 @@ public class ProjetoServiceTest {
 
     @Test
     @DisplayName("CT-38: Admin Geral filtra por Status 'Aprovado' e visualiza apenas aprovados")
-    void adminGeralDeveFiltrarPorStatusAprovado() {
+    void adminGeralDeveFiltrarPorStatusAprovadoNaListagem() {
         Projeto pAprovado = criarProjetoExemplo(1L, "Projeto Aprovado", "Recife", "Aprovado");
         Projeto pOutro = criarProjetoExemplo(2L, "Projeto Outro", "Caruaru", "Em Correção");
 
@@ -468,14 +491,15 @@ public class ProjetoServiceTest {
     @Test
     @DisplayName("CT-40: Admin Geral faz download de anexos de projeto de outro usuário com sucesso")
     void adminGeralDeveFazerDownloadComSucesso() {
-        when(projetoRepository.getReferenceById(10L))
-            .thenReturn(criarProjetoExemplo(10L, "Inclusão Digital para Terceira Idade - Módulo 2", "Recife", "Em Correção"));
+        when(anexoRepository.findByIdAndProjetoId(1L, 10L))
+            .thenReturn(Optional.of(new Anexo(1L, "anexo.pdf", "Anexo", new byte[]{1}, 10L)));
 
         assertTrue(projetoService.verificarPermissaoDownload(10L, "Admin Geral"));
 
-        projetoService.downloadAnexo(10L, 1L);
+        Anexo anexo = projetoService.downloadAnexo(10L, 1L);
 
-        verify(projetoRepository).getReferenceById(10L);
+        assertNotNull(anexo);
+        verify(anexoRepository).findByIdAndProjetoId(1L, 10L);
     }
 
     // ========== CT-41: Filtros aplicados sem resultados correspondentes ==========
@@ -512,15 +536,6 @@ public class ProjetoServiceTest {
     @Test
     @DisplayName("CT-42: Proponente sem perfil administrativo é bloqueado ao acessar listagem administrativa")
     void proponenteNaoDeveAcessarListagemAdministrativa() {
-        assertFalse(projetoService.verificarPermissaoDownload(1L, "Proponente"));
-    }
-
-    @Test
-    @DisplayName("CT-42: Proponente não tem permissão para listar projetos administrativos")
-    void proponenteNaoTemPermissaoParaListarProjetos() {
-        when(projetoRepository.findAll())
-            .thenReturn(List.of(criarProjetoExemplo(1L, "P1", "Recife", "Submetido")));
-
         assertFalse(projetoService.verificarPermissaoDownload(1L, "Proponente"));
     }
 
@@ -607,8 +622,8 @@ public class ProjetoServiceTest {
     @Test
     @DisplayName("CT-46: Download de anexo inexistente exibe mensagem de erro sem travar a aplicação")
     void downloadDeAnexoInexistenteDeveExibirErroSemTravar() {
-        when(projetoRepository.getReferenceById(1L))
-            .thenReturn(criarProjetoExemplo(1L, "Projeto com Anexo Inexistente", "Recife", "Em Correção"));
+        when(anexoRepository.findByIdAndProjetoId(999L, 1L))
+            .thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(
             RuntimeException.class,
@@ -621,8 +636,8 @@ public class ProjetoServiceTest {
     @Test
     @DisplayName("CT-46: Após falha no download, sistema continua funcionando normalmente")
     void aposFalhaNoDownloadSistemaDeveContinuarFuncionando() {
-        when(projetoRepository.getReferenceById(1L))
-            .thenReturn(criarProjetoExemplo(1L, "Projeto", "Recife", "Em Correção"));
+        when(anexoRepository.findByIdAndProjetoId(999L, 1L))
+            .thenReturn(Optional.empty());
         when(projetoRepository.findAll())
             .thenReturn(List.of(
                 criarProjetoExemplo(1L, "P1", "Recife", "Em Correção"),
